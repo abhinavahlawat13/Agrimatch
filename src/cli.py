@@ -27,3 +27,10 @@ def get_user_input():
             break
           except ValueError:
             print("Invalid input. Please enter a numeric value.")
+
+         return inputs
+
+
+if __name__ == "__main__":
+    print("\n--- AGRIMATCH CROP PREDICTION ---")
+    DATA_FILE = "Crop_recommendation.csv"
