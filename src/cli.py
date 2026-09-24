@@ -34,3 +34,5 @@ def get_user_input():
 if __name__ == "__main__":
     print("\n--- AGRIMATCH CROP PREDICTION ---")
     DATA_FILE = "Crop_recommendation.csv"
+    model = Agrimatch(data_path=DATA_FILE)
+    print("Recommended Crop:", model.predict(get_user_input()))
