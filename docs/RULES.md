@@ -8,5 +8,5 @@
 
 ### Response & Process Rules
 1. Task First: Before writing code, refer to `docs/TASKS.md` and only execute the active task.
-2. Update Memory: Document major architecture or algorithmic changes in `docs/MEMORY.md`.
+2. Update Memory: Document major architecture or algorithmic changes in `docs/MEMORY.md`.     
 ###
