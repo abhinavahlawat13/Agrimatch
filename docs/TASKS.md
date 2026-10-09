@@ -1,9 +1,9 @@
-#  Task 1
+# AgriMatch Task Tracker
 
 - [x] Task 1: Spec Documentation (`docs/`)
-- [ ] Task 2: Data Ingestion & Global Statistics (`src/engine.py`)
-  - [ ] Parse CSV into NumPy feature matrix `X` and label array `y`
-  - [ ] Calculate global mean vector ($\mu$) and standard deviation ($\sigma$)
-- [ ] Task 3: Boolean Masking & Centroid Matrix Computation
-- [ ] Task 4: Vectorized Euclidean Distance Engine
-- [ ] Task 5: Interactive Terminal Interface (`src/cli.py`)
+- [x] Task 2: Data Ingestion & Global Statistics (`src/engine.py`)
+  - [x] Parse CSV into NumPy feature matrix `X` and label array `y`
+  - [x] Calculate global mean vector ($\mu$) and standard deviation ($\sigma$)
+- [x] Task 3: Boolean Masking & Centroid Matrix Computation
+- [x] Task 4: Vectorized Euclidean Distance Engine
+- [x] Task 5: Interactive Terminal Interface (`src/cli.py`)
