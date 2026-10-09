@@ -4,7 +4,7 @@ from pydantic import BaseModel
 import sys
 from pathlib import Path
 
-# Add project root
+# Add project root directory to sys.path
 ROOT_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(ROOT_DIR))
 
@@ -12,7 +12,7 @@ from src.engine import AgriMatchEngine
 
 app = FastAPI(title="AgriMatch")
 
-# Initialize engine
+# Initialize engine with dataset
 data_csv = ROOT_DIR / "data" / "Crop_recommendation.csv"
 engine = AgriMatchEngine(data_path=str(data_csv))
 
@@ -91,17 +91,32 @@ HTML_CONTENT = """<!DOCTYPE html>
       };
 
       try {
-        const res = await fetch('/api/recommend', {
+        let endpoint = '/api/recommend';
+        let res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
+
+        if (!res.ok) {
+          endpoint = '/recommend';
+          res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        }
+
         const data = await res.json();
         if (data.success) {
           const cardsList = document.getElementById('cardsList');
           cardsList.innerHTML = '';
           const badges = ['Best Fit', 'Moderate Fit', 'Alternative'];
-          const colors = ['bg-emerald-50 border-emerald-300 text-emerald-800', 'bg-blue-50 border-blue-200 text-blue-800', 'bg-slate-50 border-slate-200 text-slate-700'];
+          const colors = [
+            'bg-emerald-50 border-emerald-300 text-emerald-800',
+            'bg-blue-50 border-blue-200 text-blue-800',
+            'bg-slate-50 border-slate-200 text-slate-700'
+          ];
           
           data.recommendations.forEach((item, index) => {
             cardsList.innerHTML += `
@@ -118,9 +133,11 @@ HTML_CONTENT = """<!DOCTYPE html>
             `;
           });
           document.getElementById('results').classList.remove('hidden');
+        } else {
+          alert('Error: ' + JSON.stringify(data));
         }
       } catch (err) {
-        alert('Error fetching recommendations');
+        alert('Request failed: ' + err.message);
       } finally {
         btn.innerText = 'Get Recommendations';
         btn.disabled = false;
@@ -132,6 +149,8 @@ HTML_CONTENT = """<!DOCTYPE html>
 """
 
 @app.get("/", response_class=HTMLResponse)
+@app.get("/api", response_class=HTMLResponse)
+@app.get("/api/", response_class=HTMLResponse)
 def home():
     return HTML_CONTENT
 
@@ -144,6 +163,7 @@ class QueryRequest(BaseModel):
     ph: float
     rainfall: float
 
+@app.post("/recommend")
 @app.post("/api/recommend")
 def recommend_crop(data: QueryRequest):
     try:
