@@ -1,17 +1,19 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 import sys
 from pathlib import Path
 
-# Add root directory to sys.path
-sys.path.append(str(Path(__file__).resolve().parent.parent))
+# Root path add karo
+ROOT_DIR = Path(__file__).resolve().parent.parent
+sys.path.append(str(ROOT_DIR))
 
 from src.engine import AgriMatchEngine
 
 app = FastAPI()
 
-# Data file path
-data_csv = Path(__file__).resolve().parent.parent / "data" / "Crop_recommendation.csv"
+# Data initialize
+data_csv = ROOT_DIR / "data" / "Crop_recommendation.csv"
 engine = AgriMatchEngine(data_path=data_csv)
 
 class QueryRequest(BaseModel):
@@ -22,6 +24,13 @@ class QueryRequest(BaseModel):
     humidity: float
     ph: float
     rainfall: float
+
+@app.get("/", response_class=HTMLResponse)
+def serve_home():
+    html_file = ROOT_DIR / "public" / "index.html"
+    if html_file.exists():
+        return html_file.read_text(encoding="utf-8")
+    return "<h1>AgriMatch UI file missing</h1>"
 
 @app.post("/api/recommend")
 def recommend_crop(data: QueryRequest):
